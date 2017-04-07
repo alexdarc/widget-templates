@@ -1,0 +1,85 @@
+<div
+  class="retailrocket retailrocket-widget-{{data-retailrocket-markup-block}} retailrocket-theme-default"
+  data-header-text="Хиты продаж"
+  data-algorithm="popular"
+  data-algorithm-argument="0"
+  data-number-of-items="12"
+  data-image-width="220"
+  data-image-height="220"
+  data-textoverflowhidden="true"
+  data-template-container-id="widget-template"
+  data-on-pre-render="retailrocket.storeName.preRenderFn(this, data, renderFn)"
+  data-on-post-render="retailrocket.storeName.postRenderFn(this)"
+  data-retailrocket-morebutton="false"
+  data-retailrocket-buybutton="false"
+  >
+</div>
+<style type="text/css">
+.retailrocket-widget-{{data-retailrocket-markup-block}}{font:inherit}
+.retailrocket-widget-{{data-retailrocket-markup-block}} .retailrocket-item{display:inline-block;vertical-align:top}
+.retailrocket-widget-{{data-retailrocket-markup-block}}[data-retailrocket-morebutton=false] .retailrocket-actions-more,
+.retailrocket-widget-{{data-retailrocket-markup-block}}[data-retailrocket-buybutton=false] .retailrocket-actions-buy{display:none}
+
+</style>
+<script id="widget-template" type="text/html">
+  <div class="retailrocket-container">
+    <header class="retailrocket-widgettitle">
+      <span><%=(headerText)%></span>
+    </header>
+    <div class="retailrocket-items-container">
+      <div class="retailrocket-items">
+        <% for (var i = 0 ; i < numberOfItems; ++i) with(items[i]) { %>
+        <div class="retailrocket-item">
+          <div class="retailrocket-item-container">
+            <a class="retailrocket-item-info" href="<%=Url%>" onmousedown='rrApi.recomMouseDown(<%=ItemId%>, { suggester: "<%=suggesterId%>", methodName: "<%=algorithm%>" })'>
+              <div class="retailrocket-item-image"><img src="//cdn.retailrocket.net/api/1.0/partner/<%=partnerId%>/item/<%=ItemId%>/picture/?format=png&width=<%=itemImageWidth%>&height=<%=itemImageHeight%>&scale=both" onerror="retailrocket.widget.hideProduct(this)"></div>
+              <div class="retailrocket-item-brand">
+                <%=Vendor %>
+              </div>
+              <div class="retailrocket-item-title">
+                <%=Name %>
+              </div>
+              <div class="retailrocket-item-description">
+                <%=Description %>
+              </div>
+            </a>
+            <div class="retailrocket-price-wrapper">
+              <div class="retailrocket-item-price"> <span class="retailrocket-item-price-value"><%= retailrocket.widget.formatNumber(Price, ",", " ", 0) %></span><span class="retailrocket-item-price-currency"></span> </div>
+              <% if ( OldPrice > Price ) {  %>
+              <div class="retailrocket-item-discount-wrapper">
+                <div class="retailrocket-item-old-price"> <span class="retailrocket-item-old-price-value"><%= retailrocket.widget.formatNumber(OldPrice, ",", " ", 0) %></span><span class="retailrocket-item-price-currency"></span> </div>
+                <% var Discount = Math.round( 100 - Price / OldPrice * 100 ); %>
+              </div>
+              <% } %>
+            </div>
+            <nav class="retailrocket-actions">
+              <a class="retailrocket-actions-more" href="<%=Url%>" onmousedown='rrApi.recomMouseDown(<%=ItemId%>, { suggester: "<%=suggesterId%>", methodName: "<%=algorithm%>" })'></a>
+              <a class="retailrocket-actions-buy" href="<%=Url%>" onclick='rrApi.recomAddToCart(<%=ItemId%>, { suggester: "<%=suggesterId%>", methodName: "<%=algorithm%>" })'></a>
+            </nav>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</script>
+<script type="text/javascript">
+!function(retailrocket, $) {
+  'use strict';
+
+  retailrocket.storeName = (function() {
+    function preRenderFn(widget, recoms, renderFn) {
+      renderFn(recoms);
+    }
+    function postRenderFn(widget) {
+    }
+    
+    return {
+      preRenderFn: preRenderFn,
+      postRenderFn: postRenderFn
+    };
+  })();
+
+  retailrocket.widget.render('retailrocket-widget-{{data-retailrocket-markup-block}}');
+}(retailrocket, window.jQuery);
+</script>
